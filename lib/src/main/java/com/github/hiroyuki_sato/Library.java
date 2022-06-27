@@ -3,8 +3,37 @@
  */
 package com.github.hiroyuki_sato;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+
 public class Library {
     public boolean someLibraryMethod() {
-        return true;
+        try {
+            Connection conn;
+            Statement stmt;
+            ResultSet rs;
+
+            System.out.println("hogehoge");
+            conn =
+                    DriverManager.getConnection("jdbc:mysql://localhost/mysql?" +
+                            "user=root&password=root");
+            stmt = conn.createStatement();
+            stmt.execute("select now();");
+            rs = stmt.getResultSet();
+            while(rs.next()) {
+                System.out.println(rs.getString(1));
+            }
+
+            rs.close();
+            return true;
+        } catch (SQLException ex){
+            System.out.println("SQLException: " + ex.getMessage());
+            System.out.println("SQLState: " + ex.getSQLState());
+            System.out.println("VendorError: " + ex.getErrorCode());
+            return false;
+        }
     }
 }
