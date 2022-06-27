@@ -67,6 +67,8 @@ jobs:
       run: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql -proot -h 127.0.0.1
     - name: start mysql
       run: sudo systemctl start mysql.service
+    - name: show log mysql
+      run: journalctl -u mysql.service
     #
     # timezone check
     #
@@ -106,75 +108,75 @@ jobs:
       with:
         name: mysql
         path: embulk-input-mysql/build/reports/tests/test
-  postgresql9_4:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:9.4
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-        ports:
-        - "5432:5432"
-        env:
-          POSTGRES_PASSWORD: postgres
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-java@v2
-      with:
-        java-version: 8
-        distribution: 'zulu'
-    - name: Connect
-      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "\l"
-      env:
-        PGPASSWORD: postgres
-    - name: Create database
-      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "create database ci_test;"
-      env:
-        PGPASSWORD: postgres
-    - name: Build with testing
-      run: ./gradlew check
-      env:
-        _JAVA_OPTIONS: "-Xmx2048m -Xms512m"
-        EMBULK_INPUT_POSTGRESQL_TEST_CONFIG: "${{ github.workspace }}/ci/postgresql.yml"
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: postgresql
-        path: embulk-input-postgresql/build/reports/tests/test
-  postgresql13:
-    runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres:13
-        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
-        ports:
-        - "5432:5432"
-        env:
-          POSTGRES_PASSWORD: postgres
-    steps:
-    - uses: actions/checkout@v2
-    - uses: actions/setup-java@v2
-      with:
-        java-version: 8
-        distribution: 'zulu'
-    - name: Connect
-      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "\l"
-      env:
-        PGPASSWORD: postgres
-    - name: Show version
-      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "select * from version();"
-      env:
-        PGPASSWORD: postgres
-    - name: Create database
-      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "create database ci_test;"
-      env:
-        PGPASSWORD: postgres
-    - name: Build with testing
-      run: ./gradlew check
-      env:
-        _JAVA_OPTIONS: "-Xmx2048m -Xms512m"
-        EMBULK_INPUT_POSTGRESQL_TEST_CONFIG: "${{ github.workspace }}/ci/postgresql.yml"
-    - uses: actions/upload-artifact@v2
-      if: always()
-      with:
-        name: postgresql
-        path: embulk-input-postgresql/build/reports/tests/test
+#  postgresql9_4:
+#    runs-on: ubuntu-latest
+#    services:
+#      postgres:
+#        image: postgres:9.4
+#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+#        ports:
+#        - "5432:5432"
+#        env:
+#          POSTGRES_PASSWORD: postgres
+#    steps:
+#    - uses: actions/checkout@v2
+#    - uses: actions/setup-java@v2
+#      with:
+#        java-version: 8
+#        distribution: 'zulu'
+#    - name: Connect
+#      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "\l"
+#      env:
+#        PGPASSWORD: postgres
+#    - name: Create database
+#      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "create database ci_test;"
+#      env:
+#        PGPASSWORD: postgres
+#    - name: Build with testing
+#      run: ./gradlew check
+#      env:
+#        _JAVA_OPTIONS: "-Xmx2048m -Xms512m"
+#        EMBULK_INPUT_POSTGRESQL_TEST_CONFIG: "${{ github.workspace }}/ci/postgresql.yml"
+#    - uses: actions/upload-artifact@v2
+#      if: always()
+#      with:
+#        name: postgresql
+#        path: embulk-input-postgresql/build/reports/tests/test
+#  postgresql13:
+#    runs-on: ubuntu-latest
+#    services:
+#      postgres:
+#        image: postgres:13
+#        options: --health-cmd pg_isready --health-interval 10s --health-timeout 5s --health-retries 5
+#        ports:
+#        - "5432:5432"
+#        env:
+#          POSTGRES_PASSWORD: postgres
+#    steps:
+#    - uses: actions/checkout@v2
+#    - uses: actions/setup-java@v2
+#      with:
+#        java-version: 8
+#        distribution: 'zulu'
+#    - name: Connect
+#      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "\l"
+#      env:
+#        PGPASSWORD: postgres
+#    - name: Show version
+#      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "select * from version();"
+#      env:
+#        PGPASSWORD: postgres
+#    - name: Create database
+#      run: psql -h 127.0.0.1 -p 5432 -U postgres -d postgres -c "create database ci_test;"
+#      env:
+#        PGPASSWORD: postgres
+#    - name: Build with testing
+#      run: ./gradlew check
+#      env:
+#        _JAVA_OPTIONS: "-Xmx2048m -Xms512m"
+#        EMBULK_INPUT_POSTGRESQL_TEST_CONFIG: "${{ github.workspace }}/ci/postgresql.yml"
+#    - uses: actions/upload-artifact@v2
+#      if: always()
+#      with:
+#        name: postgresql
+#        path: embulk-input-postgresql/build/reports/tests/test
