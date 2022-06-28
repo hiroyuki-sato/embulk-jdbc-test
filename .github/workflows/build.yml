@@ -66,9 +66,10 @@ jobs:
     - name: Load timezone
       run: mysql_tzinfo_to_sql /usr/share/zoneinfo | mysql -u root mysql -proot -h 127.0.0.1
     - name: start mysql
-      run: sudo systemctl restart mysqld.service
+      run: sudo systemctl restart mysql.service
     - name: show log mysql
-      run: journalctl -u mysqld.service
+      run: journalctl -u mysql.service
+      if: ${{ failure() }}
     #
     # timezone check
     #
