@@ -68,7 +68,8 @@ jobs:
     - name: start mysql
       run: sudo systemctl restart mysql.service
     - name: show log mysql
-      run: journalctl -u mysql.service
+#      run: journalctl -u mysql.service
+      run: journalctl -xe
       if: ${{ failure() }}
     #
     # timezone check
